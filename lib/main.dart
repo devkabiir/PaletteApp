@@ -6,26 +6,26 @@ class BasicAppBarSample extends StatefulWidget {
 }
 
 class _BasicAppBarSampleState extends State<BasicAppBarSample> with TickerProviderStateMixin{
-  Choice _selectedChoice = choices[0];
   int _currentPageIndex = 0;
 
-  TabController tabController;
 
   void _select(int index) {
     setState(() {
       _currentPageIndex = index;
-      tabController.animateTo(index);
     });
   }
 
 
   @override
   Widget build(BuildContext context) {
-    tabController = new TabController(vsync: this, length: 2, initialIndex: 0);
     return new MaterialApp(
       home: new Scaffold(
         bottomNavigationBar: new BottomNavigationBar(
           items: [
+            new BottomNavigationBarItem(
+              title: new Text('Editor'),
+              icon: new Icon(Icons.create)
+            ),
             new BottomNavigationBarItem(
               title: new Text('Favorites'),
               icon: new Icon(Icons.favorite)
@@ -38,9 +38,9 @@ class _BasicAppBarSampleState extends State<BasicAppBarSample> with TickerProvid
           onTap: _select,
           currentIndex: _currentPageIndex,
         ),
-        body: new TabBarView (
-          controller: tabController,
-          children: cards,
+        body: new Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: cards[_currentPageIndex],
         ),
       ),
     );
@@ -56,11 +56,13 @@ class Choice {
 const List<Choice> choices = const <Choice>[
   const Choice(title: 'Car', icon: Icons.directions_car),
   const Choice(title: 'Bicycle', icon: Icons.directions_bike),
+  const Choice(title: 'Boat', icon: Icons.directions_boat),
 ];
 
-List<ChoiceCard> cards = <ChoiceCard>[
-  new ChoiceCard(choice: choices[0]),
-  new ChoiceCard(choice: choices[1])
+List<Widget> cards = <Widget>[
+  new EditorPage(),
+  new FavoritesPage(),
+  new RecentsPage()
 ];
 
 class ChoiceCard extends StatelessWidget {
@@ -83,6 +85,57 @@ class ChoiceCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class EditorPage extends StatefulWidget {
+  @override
+  _EditorPageState createState() => new _EditorPageState();
+}
+
+class _EditorPageState extends State<EditorPage> with TickerProviderStateMixin{
+  @override
+  Widget build(BuildContext context) {
+    return new Center(
+      child: new Text("Editor Page Here")
+    );
+  }
+}
+
+
+class FavoritesPage extends StatefulWidget {
+  @override
+  _FavoritesPageState createState() => new _FavoritesPageState();
+}
+
+class _FavoritesPageState extends State<FavoritesPage> with TickerProviderStateMixin{
+  @override
+  Widget build(BuildContext context) {
+    return new ListView.builder(
+      padding: new EdgeInsets.all(8.0),
+      itemExtent: 20.0,
+      itemBuilder: (BuildContext context, int index) {
+        return new Text('Favorite $index');
+      },
+    );
+  }
+}
+
+class RecentsPage extends StatefulWidget {
+  @override
+  _RecentsPageState createState() => new _RecentsPageState();
+}
+
+class _RecentsPageState extends State<RecentsPage> with TickerProviderStateMixin{
+  @override
+  Widget build(BuildContext context) {
+    return new ListView.builder(
+      padding: new EdgeInsets.all(8.0),
+      itemExtent: 20.0,
+      itemBuilder: (BuildContext context, int index) {
+        return new Text('Recents $index');
+      },
     );
   }
 }
