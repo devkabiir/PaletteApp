@@ -59,10 +59,31 @@ const List<Choice> choices = const <Choice>[
   const Choice(title: 'Boat', icon: Icons.directions_boat),
 ];
 
+Palette testPalette1 = new Palette([
+  Colors.red,
+  Colors.purple,
+  Colors.blue
+]);
+
+Palette testPalette2 = new Palette([
+  Colors.blue,
+  Colors.black,
+  Colors.white,
+  Colors.green
+]);
+
+Palette testPalette3 = new Palette([
+  Colors.orange,
+  Colors.brown
+]);
+
+List<Palette> recents = [testPalette2, testPalette1, testPalette3];
+List<Palette> favorites = [testPalette3, testPalette2, testPalette1];
+
 List<Widget> cards = <Widget>[
   new EditorPage(),
-  new FavoritesPage(),
-  new RecentsPage()
+  new PaletteListPage(favorites),
+  new PaletteListPage(recents)
 ];
 
 class ChoiceCard extends StatelessWidget {
@@ -122,21 +143,151 @@ class _FavoritesPageState extends State<FavoritesPage> with TickerProviderStateM
   }
 }
 
-class RecentsPage extends StatefulWidget {
-  @override
-  _RecentsPageState createState() => new _RecentsPageState();
+class Palette {
+  List<Color> _colorList;
+  
+  Palette(this._colorList);
+
+  List<Color> getColors(){
+    return this._colorList;
+  }
+
+  void addColor(Color newColor){
+    _colorList.add(newColor);
+  }
+
+  void removeColor(int index){
+    _colorList.removeAt(index);
+  }
+  
+  Card toCard() {
+        return new Card(
+          child: new Row(
+                children: _createColorWidgets()
+              )
+        );
+  }
+
+  List<Expanded> _createColorWidgets() {
+    List<Expanded> _colorWidgets = new List<Expanded>();
+    _colorList.forEach((i) {
+      _colorWidgets.add(
+        new Expanded(
+          child: new Container(
+            color: i,
+            width: 64.0,
+            height: 64.0
+          )
+        )
+      );
+    });
+    return _colorWidgets;
+  }
 }
 
-class _RecentsPageState extends State<RecentsPage> with TickerProviderStateMixin{
+// class PaletteWidget extends StatelessWidget {
+//   final Palette _palette;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return new Card(
+//       child: new Row(
+//             children:<Widget>[
+//               new Expanded(
+//                 child: new Container(
+//                   color: Colors.red,
+//                   width: 64.0,
+//                   height: 64.0
+//                 )
+//               ),
+//               new Expanded(
+//                 child: new Container(
+//                   color: Colors.blue,
+//                   width: 64.0,
+//                   height: 64.0
+//                 )
+//               ),
+//               new Expanded(
+//                 child: new Container(
+//                   color: Colors.green,
+//                   width: 64.0,
+//                   height: 64.0
+//                 )
+//               ),
+//             ]
+//           )
+//     );
+//   }
+// }
+
+
+class PaletteListPage extends StatelessWidget {
+  final List<Palette> _palettesList;
+
+  PaletteListPage(this._palettesList);
+
   @override
   Widget build(BuildContext context) {
     return new ListView.builder(
-      padding: new EdgeInsets.all(8.0),
-      itemExtent: 20.0,
+      itemExtent: 64.0,
       itemBuilder: (BuildContext context, int index) {
-        return new Text('Recents $index');
+        return _palettesList[index].toCard();
       },
+      itemCount: _palettesList.length
     );
+    // new CustomScrollView(
+    //   shrinkWrap: true,
+    //   slivers: <Widget>[
+    //     new SliverPadding(
+    //       padding: const EdgeInsets.all(20.0),
+    //       sliver: new SliverList(
+    //         delegate: new SliverChildListDelegate(
+    //           <Widget>[
+    //             new Card(
+    //               child: new Row(
+    //                     children:<Widget>[
+    //                       new Expanded(
+    //                         child: new Container(
+    //                           color: Colors.red,
+    //                           width: 64.0,
+    //                           height: 64.0
+    //                         )
+    //                       ),
+    //                       new Expanded(
+    //                         child: new Container(
+    //                           color: Colors.blue,
+    //                           width: 64.0,
+    //                           height: 64.0
+    //                         )
+    //                       ),
+    //                       new Expanded(
+    //                         child: new Container(
+    //                           color: Colors.green,
+    //                           width: 64.0,
+    //                           height: 64.0
+    //                         )
+    //                       ),
+    //                     ]
+    //                   )
+    //             ),
+    //             new ListTile(
+    //               leading: const Icon(Icons.event_seat),
+    //               title: const Text('The seat for the narrator'),
+    //             ),
+    //             new ListTile(
+    //               leading: const Icon(Icons.event_seat),
+    //               title: const Text('The seat for the narrator'),
+    //             ),
+    //             new ListTile(
+    //               leading: const Icon(Icons.event_seat),
+    //               title: const Text('The seat for the narrator'),
+    //             ),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   ],
+    // );
   }
 }
 
